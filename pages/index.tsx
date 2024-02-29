@@ -33,7 +33,7 @@ export default function Home({ allPosts }) {
               title={post.title}
               description={post.description}
               date={post.date}
-              tag={post.tags}
+              tags={post.tags}
               slug={post.slug}
             />
           </div>
