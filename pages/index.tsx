@@ -29,7 +29,7 @@ export default function Home({ fourPosts }) {
           Notion Blog🚀
         </h1>
         {fourPosts.map((post) => (
-          <div className="mx-4">
+          <div className="mx-4" key={post.id}>
             <SinglePost
               title={post.title}
               description={post.description}
