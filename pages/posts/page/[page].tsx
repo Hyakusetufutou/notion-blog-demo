@@ -1,27 +1,40 @@
 import SinglePost from "@/components/Post/SinglePost";
-import { getPostsForTopPage } from "@/lib/notionAPI";
+import {
+  getNumberOfPages,
+  getPostsByPage,
+  getPostsForTopPage,
+} from "@/lib/notionAPI";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const numberOfPage = await getNumberOfPages();
+
+  let params = [];
+  for (let i = 1; i <= numberOfPage; i++) {
+    params.push({ params: { page: i.toString() } });
+  }
   return {
-    paths: [{ params: { page: "1" } }, { params: { page: "2" } }],
+    paths: params,
     fallback: "blocking",
   };
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const fourPosts = await getPostsForTopPage();
+export const getStaticProps: GetStaticProps = async (context) => {
+  const currentPage = context.params?.page;
+  const postsByPage = await getPostsByPage(
+    parseInt(currentPage.toString(), 10)
+  );
 
   return {
     props: {
-      fourPosts,
+      postsByPage,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogPageList = ({ fourPosts }) => {
+const BlogPageList = ({ postsByPage }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -35,7 +48,7 @@ const BlogPageList = ({ fourPosts }) => {
           Notion Blog🚀
         </h1>
         <section className="sm:grid grid-cols-2 w-5/6 gap-3 mx-auto">
-          {fourPosts.map((post) => (
+          {postsByPage.map((post) => (
             <div>
               <SinglePost
                 title={post.title}
