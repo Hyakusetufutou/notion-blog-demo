@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
+import { foundation } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -62,4 +63,11 @@ export const getSinglePost = async (slug) => {
     metadata,
     markdown: mdString,
   };
+};
+
+// Topページ用記事の取得(4つ)
+export const getPostsForTopPage = async (pageSize = 4) => {
+  const allPosts = await getAllPosts();
+  const fourPosts = allPosts.slice(0, pageSize);
+  return fourPosts;
 };
