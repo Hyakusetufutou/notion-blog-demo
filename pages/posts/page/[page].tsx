@@ -1,8 +1,14 @@
 import SinglePost from "@/components/Post/SinglePost";
 import { getPostsForTopPage } from "@/lib/notionAPI";
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import Link from "next/link";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [{ params: { page: "1" } }, { params: { page: "2" } }],
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps: GetStaticProps = async () => {
   const fourPosts = await getPostsForTopPage();
@@ -15,7 +21,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({ fourPosts }) {
+const BlogPageList = ({ fourPosts }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -28,25 +34,23 @@ export default function Home({ fourPosts }) {
         <h1 className="text-5xl font-medium text-center mb-16">
           Notion Blog🚀
         </h1>
-        {fourPosts.map((post) => (
-          <div className="mx-4">
-            <SinglePost
-              title={post.title}
-              description={post.description}
-              date={post.date}
-              tags={post.tags}
-              slug={post.slug}
-              isPaginationPage={false}
-            />
-          </div>
-        ))}
-        <Link
-          href="/posts/page/1"
-          className="mb-6 lg:w-1/2 mx-auto px-5 block text-right"
-        >
-          ...もっと見る
-        </Link>
+        <section className="sm:grid grid-cols-2 w-5/6 gap-3 mx-auto">
+          {fourPosts.map((post) => (
+            <div>
+              <SinglePost
+                title={post.title}
+                description={post.description}
+                date={post.date}
+                tags={post.tags}
+                slug={post.slug}
+                isPaginationPage={true}
+              />
+            </div>
+          ))}
+        </section>
       </main>
     </div>
   );
-}
+};
+
+export default BlogPageList;
