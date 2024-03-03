@@ -1,12 +1,29 @@
 import Pagination from "@/components/Pagination/Pagination";
 import SinglePost from "@/components/Post/SinglePost";
-import { getPostsByTagAndPage } from "@/lib/notionAPI";
+import {
+  getAllTags,
+  getNumberOfPagesByTag,
+  getPostsByTagAndPage,
+} from "@/lib/notionAPI";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const allTags = await getAllTags();
+  let params = [];
+
+  await Promise.all(
+    allTags.map((tag: string) => {
+      return getNumberOfPagesByTag(tag).then((numberOfPagesByTag: number) => {
+        for (let i = 1; i <= numberOfPagesByTag; i++) {
+          params.push({ params: { page: i.toString() } });
+        }
+      });
+    })
+  );
+
   return {
-    paths: [{ params: { tag: "blog", page: "1" } }],
+    paths: params,
     fallback: "blocking",
   };
 };
@@ -23,15 +40,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
     parseInt(currentPage, 10)
   );
 
+  const numberOfPagesByTag = await getNumberOfPagesByTag(upperCaseCurrnetTag);
+
   return {
     props: {
       posts,
+      numberOfPagesByTag,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogTagPageList = ({ numberOfPage, posts }) => {
+const BlogTagPageList = ({ numberOfPagesByTag, posts }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -58,7 +78,7 @@ const BlogTagPageList = ({ numberOfPage, posts }) => {
             </div>
           ))}
         </section>
-        <Pagination numberOfPage={numberOfPage} />
+        <Pagination numberOfPage={numberOfPagesByTag} />
       </main>
     </div>
   );

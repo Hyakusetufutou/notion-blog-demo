@@ -103,3 +103,23 @@ export const getPostsByTagAndPage = async (tagName: string, page: number) => {
 
   return posts.slice(startIndex, endIndex);
 };
+
+export const getNumberOfPagesByTag = async (tagName: string) => {
+  const allPosts = await getAllPosts();
+  const posts = allPosts.filter((post) =>
+    post.tags.find((tag: string) => tag === tagName)
+  );
+
+  return (
+    Math.floor(posts.length / NUMBER_OF_PORTS_PER_PAGE) +
+    (posts.length % NUMBER_OF_PORTS_PER_PAGE > 0 ? 1 : 0)
+  );
+};
+
+export const getAllTags = async () => {
+  const allPosts = await getAllPosts();
+  const allTagsDuplicationLists = allPosts.flatMap((post) => post.tags);
+  const set = new Set(allTagsDuplicationLists);
+  const allTagsList = Array.from(set);
+  return allTagsList;
+};
