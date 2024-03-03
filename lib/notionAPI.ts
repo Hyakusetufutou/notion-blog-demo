@@ -1,7 +1,6 @@
 import { NUMBER_OF_PORTS_PER_PAGE } from "@/constants/constants";
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
-import { foundation } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -11,7 +10,7 @@ const n2m = new NotionToMarkdown({ notionClient: notion });
 
 export const getAllPosts = async () => {
   const posts = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID,
+    database_id: process.env.NOTION_DATABASE_ID!,
     page_size: 100,
     filter: {
       property: "Published",
@@ -34,9 +33,9 @@ export const getAllPosts = async () => {
   });
 };
 
-const getPageMetaData = (post) => {
-  const getTags = (tags) => {
-    const allTags = tags.map((tag) => {
+const getPageMetaData = (post: any) => {
+  const getTags = (tags: any) => {
+    const allTags = tags.map((tag: any) => {
       return tag.name;
     });
     return allTags;
@@ -52,9 +51,9 @@ const getPageMetaData = (post) => {
   };
 };
 
-export const getSinglePost = async (slug) => {
+export const getSinglePost = async (slug: any) => {
   const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID,
+    database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
       property: "Slug",
       formula: {

@@ -1,9 +1,25 @@
 import { getAllPosts, getSinglePost } from "@/lib/notionAPI";
+import { GetStaticProps } from "next";
 import Link from "next/link";
+import { MdStringObject } from "notion-to-md/build/types";
 import React from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
+
+type Props = {
+  post: {
+    metadata: {
+      id: any;
+      title: any;
+      description: any;
+      date: any;
+      slug: any;
+      tags: any;
+    };
+    markdown: MdStringObject;
+  };
+};
 
 export const getStaticPaths = async () => {
   const allPosts = await getAllPosts();
@@ -15,8 +31,8 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async ({ params }) => {
-  const post = await getSinglePost(params.slug);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const post = await getSinglePost(params!.slug);
   return {
     props: {
       post,
@@ -25,7 +41,7 @@ export const getStaticProps = async ({ params }) => {
   };
 };
 
-const Post = ({ post }) => {
+const Post = ({ post }: Props) => {
   console.log(post.markdown.parent);
   return (
     <section className="container lg:px-2 px-5 h-screen lg:w-2/5 mx-auto mt-20">

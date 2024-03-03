@@ -5,6 +5,18 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 
+type Props = {
+  fourPosts: {
+    id: any;
+    title: any;
+    description: any;
+    date: any;
+    slug: any;
+    tags: any;
+  }[];
+  allTags: any[];
+};
+
 export const getStaticProps: GetStaticProps = async () => {
   const fourPosts = await getPostsForTopPage();
   const allTags = await getAllTags();
@@ -18,7 +30,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({ fourPosts, allTags }) {
+export default function Home({ fourPosts, allTags }: Props) {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -31,7 +43,7 @@ export default function Home({ fourPosts, allTags }) {
         <h1 className="text-5xl font-medium text-center mb-16">
           Notion Blog🚀
         </h1>
-        {fourPosts.map((post) => (
+        {fourPosts.map((post: any) => (
           <div className="mx-4" key={post.id}>
             <SinglePost
               title={post.title}

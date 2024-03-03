@@ -1,14 +1,22 @@
 import Pagination from "@/components/Pagination/Pagination";
 import SinglePost from "@/components/Post/SinglePost";
 import Tag from "@/components/Tag/Tag";
-import {
-  getAllTags,
-  getNumberOfPages,
-  getPostsByPage,
-  getPostsForTopPage,
-} from "@/lib/notionAPI";
+import { getAllTags, getNumberOfPages, getPostsByPage } from "@/lib/notionAPI";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+
+type Props = {
+  postsByPage: {
+    id: any;
+    title: any;
+    description: any;
+    date: any;
+    slug: any;
+    tags: any;
+  }[];
+  numberOfPage: number;
+  alltags: any[];
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const numberOfPage = await getNumberOfPages();
@@ -26,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const currentPage = context.params?.page;
   const postsByPage = await getPostsByPage(
-    parseInt(currentPage.toString(), 10)
+    parseInt(currentPage!.toString(), 10)
   );
 
   const numberOfPage = await getNumberOfPages();
@@ -43,7 +51,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const BlogPageList = ({ postsByPage, numberOfPage, alltags }) => {
+const BlogPageList = ({ postsByPage, numberOfPage, alltags }: Props) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
