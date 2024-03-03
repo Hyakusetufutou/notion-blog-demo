@@ -16,11 +16,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
     allTags.map((tag: string) => {
       return getNumberOfPagesByTag(tag).then((numberOfPagesByTag: number) => {
         for (let i = 1; i <= numberOfPagesByTag; i++) {
-          params.push({ params: { page: i.toString() } });
+          params.push({ params: { tag: tag, page: i.toString() } });
         }
       });
     })
   );
+
+  console.log(params);
 
   return {
     paths: params,
@@ -46,12 +48,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       posts,
       numberOfPagesByTag,
+      currentTag,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogTagPageList = ({ numberOfPagesByTag, posts }) => {
+const BlogTagPageList = ({ numberOfPagesByTag, posts, currentTag }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -78,7 +81,7 @@ const BlogTagPageList = ({ numberOfPagesByTag, posts }) => {
             </div>
           ))}
         </section>
-        <Pagination numberOfPage={numberOfPagesByTag} />
+        <Pagination numberOfPage={numberOfPagesByTag} tag={currentTag} />
       </main>
     </div>
   );
