@@ -1,6 +1,8 @@
 import Pagination from "@/components/Pagination/Pagination";
 import SinglePost from "@/components/Post/SinglePost";
+import Tag from "@/components/Tag/Tag";
 import {
+  getAllTags,
   getNumberOfPages,
   getPostsByPage,
   getPostsForTopPage,
@@ -29,16 +31,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const numberOfPage = await getNumberOfPages();
 
+  const alltags = await getAllTags();
+
   return {
     props: {
       postsByPage,
       numberOfPage,
+      alltags,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogPageList = ({ postsByPage, numberOfPage }) => {
+const BlogPageList = ({ postsByPage, numberOfPage, alltags }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -66,6 +71,7 @@ const BlogPageList = ({ postsByPage, numberOfPage }) => {
           ))}
         </section>
         <Pagination numberOfPage={numberOfPage} tag={""} />
+        <Tag tags={alltags} />
       </main>
     </div>
   );
