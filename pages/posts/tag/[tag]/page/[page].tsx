@@ -9,9 +9,23 @@ import {
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
+type Props = {
+  posts: {
+    id: any;
+    title: any;
+    description: any;
+    date: any;
+    slug: any;
+    tags: any;
+  }[];
+  numberOfPagesByTag: number;
+  currentTag: string;
+  allTags: any[];
+};
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const allTags = await getAllTags();
-  let params = [];
+  let params: any[] = [];
 
   await Promise.all(
     allTags.map((tag: string) => {
@@ -23,8 +37,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     })
   );
 
-  console.log(params);
-
   return {
     paths: params,
     fallback: "blocking",
@@ -32,8 +44,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const currentPage: string = context.params?.page!.toString();
-  const currentTag: string = context.params?.tag!.toString();
+  const currentPage: string = context.params?.page!.toString()!;
+  const currentTag: string = context.params?.tag!.toString()!;
 
   const upperCaseCurrnetTag =
     currentTag.charAt(0).toUpperCase() + currentTag.slice(1);
@@ -63,7 +75,7 @@ const BlogTagPageList = ({
   posts,
   currentTag,
   allTags,
-}) => {
+}: Props) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
