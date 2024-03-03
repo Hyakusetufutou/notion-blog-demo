@@ -4,7 +4,7 @@ import Link from "next/link";
 import { MdStringObject } from "notion-to-md/build/types";
 import React from "react";
 import Markdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 type Props = {
@@ -61,11 +61,10 @@ const Post = ({ post }: Props) => {
         <Markdown
           components={{
             code(props) {
-              const { children, className, node, ...rest } = props;
+              const { children, className, node } = props;
               const match = /language-(\w+)/.exec(className || "");
               return match ? (
                 <SyntaxHighlighter
-                  {...rest}
                   PreTag="div"
                   language={match[1]}
                   style={vscDarkPlus}
@@ -73,9 +72,7 @@ const Post = ({ post }: Props) => {
                   {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
               ) : (
-                <code {...rest} className={className}>
-                  {children}
-                </code>
+                <code className={className}>{children}</code>
               );
             },
           }}
