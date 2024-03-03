@@ -43,7 +43,6 @@ const Post = ({ post }) => {
       ))}
       <div className="mt-10 font-medium">
         <Markdown
-          children={post.markdown.parent}
           components={{
             code(props) {
               const { children, className, node, ...rest } = props;
@@ -52,10 +51,11 @@ const Post = ({ post }) => {
                 <SyntaxHighlighter
                   {...rest}
                   PreTag="div"
-                  children={String(children).replace(/\n$/, "")}
                   language={match[1]}
                   style={vscDarkPlus}
-                />
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
               ) : (
                 <code {...rest} className={className}>
                   {children}
@@ -63,7 +63,9 @@ const Post = ({ post }) => {
               );
             },
           }}
-        />
+        >
+          {post.markdown.parent}
+        </Markdown>
 
         <Link href="/">
           <span className="pb-20 block mt-3 text-sky-900">←ホームに戻る</span>
