@@ -21,7 +21,11 @@ type Props = {
 export const getStaticPaths: GetStaticPaths = async () => {
   const numberOfPage = await getNumberOfPages();
 
-  let params = [];
+  let params: {
+    params: {
+      page: string;
+    };
+  }[] = [];
   for (let i = 1; i <= numberOfPage; i++) {
     params.push({ params: { page: i.toString() } });
   }
